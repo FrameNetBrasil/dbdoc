@@ -1,0 +1,21 @@
+--
+-- script para criação da estrtura default de project
+-- para webtool40
+--
+-- Project: Default
+-- Dataset: Default
+-- Task: Default
+
+insert into project(name, description) values ('Default Project', 'Default Project');
+insert into dataset(name,description,idProject) values ('Default Dataset', 'Default Dataset', (select idProject from project where  name = 'Default Project'));
+insert into task(size,isActive,type,createdAt,name,description,idDataset) values
+(0,1,'Annotation',now(),'Default Task','Default Task',(select idDataset from dataset where name = 'Default Dataset'));
+
+-- associa todos os corpus existentes ao Dataset Default, até que sejam criados os projetos corretos.
+
+select idDataset into @idDataset from dataset where name = 'Default Dataset';
+update corpus set idDataset = @idDataset where idCorpus > 0;
+delete from dataset_corpus where idCorpus > 0;
+insert into dataset_corpus (idDataset, idCorpus)
+select idDataset,idCorpus from corpus;
+

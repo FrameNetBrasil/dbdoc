@@ -23,7 +23,7 @@ interface BreadcrumbOptions {
    */
   resolveFrontmatterTitle: boolean
   /**
-   * Whether to display breadcrumbs on root `index.md`
+   * Whether to display breadcrumbs on root `_index.md`
    */
   hideOnRoot: boolean
   /**

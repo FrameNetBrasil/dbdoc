@@ -1,0 +1,297 @@
+--
+-- scripts para alteração da estrutura Project/Task
+-- 30/10/2024
+--
+-- O objetivo é remover a estrutura temporaria com "Default Project" que foi criada na migração do banco
+--
+
+
+delete from usertask_document where idUserTask in (select idUserTask from usertask where iduser = -2);
+
+update annotation a
+set a.idUserTask = 1
+where a.idUserTask in (select idUserTask from usertask where iduser = -2);
+
+delete from usertask where (idUser = -2) and (idTask <> 1);
+
+delete from task where idTask between 2 and 36;
+
+delete from usertask where (idUserTask = 64);
+
+delete from dataset_corpus where iddataset between 2 and 36;
+
+delete from dataset where iddataset between 2 and 36;
+
+insert into project_dataset(idProject, idDataset) values (1,1);
+
+update usertask_document utd
+join document d on (utd.idDocument = d.idDocument)
+set utd.idCorpus = d.idCorpus
+where utd.idCorpus is null;
+
+
+update task t
+join project_dataset pd on (pd.idDataset = t.idDataset)
+set t.idProject = pd.idProject
+where t.idProject is null;
+
+
+--
+-- Alteração da estrutura GenericLabel
+-- 18/11/2024
+--
+-- O objetivo é remover o relationtype "rel_haslabeltype", colocando o LayerType como FK (opcional) na tabela GenericLabel
+--
+
+update genericlabel gl
+join view_relation r on (gl.idEntity = r.idEntity2)
+join layertype lt on (lt.identity = r.identity1)
+set gl.idLayerType = lt.idLayerType
+where (r.relationtype = 'rel_haslabeltype');
+
+update layergroup set type='Text' where type is null;
+
+delete from layergroup where idlayergroup not in (select idLayerGroup from layertype);
+
+--
+-- Alteração da estrutura de Relations
+-- 20/11/2024
+--
+-- Remover Domain do RelationType
+-- Acrescentar dados de direct/invers/color na tabela do bd
+--
+
+update entity set type='RGP' where type='RGT';
+
+
+update relationtype set nameCanonical='Inheritance',nameDirect='Is Inherited By',nameInverse='Inherits from',color='#FF0000' where entry ='rel_inheritance';
+update relationtype set nameCanonical='SubFrame',nameDirect='Has as subFrame',nameInverse='Is subframe of',color='#0000FF' where entry ='rel_subframe';
+update relationtype set nameCanonical='Using',nameDirect='Is used by',nameInverse='Uses',color='#006301' where entry ='rel_using';
+update relationtype set nameCanonical='See_also',nameDirect='See_also',nameInverse='Has as see_also',color='#9e1fee' where entry ='rel_see_also';
+update relationtype set nameCanonical='ReFraming_Mapping',nameDirect='ReFraming_Mapping',nameInverse='',color='' where entry ='rel_reframing_mapping';
+update relationtype set nameCanonical='CoreSet',nameDirect='CoreSet',nameInverse='CoreSet',color='#000' where entry ='rel_coreset';
+update relationtype set nameCanonical='Excludes',nameDirect='Excludes',nameInverse='Excludes',color='#000' where entry ='rel_excludes';
+update relationtype set nameCanonical='Requires',nameDirect='Requires',nameInverse='Requires',color='#000' where entry ='rel_requires';
+update relationtype set nameCanonical='Inchoative_of',nameDirect='Is inchoative of',nameInverse='Has as inchoative',color='#897201' where entry ='rel_inchoative_of';
+update relationtype set nameCanonical='Causative_of',nameDirect='Is causative of',nameInverse='Has as causative',color='#fdd101' where entry ='rel_causative_of';
+update relationtype set nameCanonical='Precedes',nameDirect='Precedes',nameInverse='Is preceded by',color='#000000' where entry ='rel_precedes';
+update relationtype set nameCanonical='Perspective_on',nameDirect='Is perspectivized in',nameInverse='Perspective on',color='#fdbeca' where entry ='rel_perspective_on';
+update relationtype set nameCanonical='Translation',nameDirect='Translation',nameInverse='',color='' where entry ='rel_translation';
+update relationtype set nameCanonical='Evokes',nameDirect='Evokes',nameInverse='',color='' where entry ='rel_evokes';
+update relationtype set nameCanonical='Element_of',nameDirect='Element_of',nameInverse='',color='' where entry ='rel_elementof';
+update relationtype set nameCanonical='HasType',nameDirect='HasType',nameInverse='',color='' where entry ='rel_hastype';
+update relationtype set nameCanonical='HasLabelType',nameDirect='HasLabelType',nameInverse='',color='' where entry ='rel_haslabeltype';
+update relationtype set nameCanonical='HasSubCorpus',nameDirect='HasSubCorpus',nameInverse='',color='' where entry ='rel_hassubcorpus';
+update relationtype set nameCanonical='Template',nameDirect='Template',nameInverse='',color='' where entry ='rel_hastemplate';
+update relationtype set nameCanonical='GF-POS',nameDirect='GF-POS',nameInverse='',color='' where entry ='rel_gfpos';
+update relationtype set nameCanonical='SubTypeOf',nameDirect='Is subtype of',nameInverse='Has as subtype',color='#9e1fee' where entry ='rel_subtypeof';
+update relationtype set nameCanonical='CreatedFrom',nameDirect='CreatedFrom',nameInverse='',color='' where entry ='rel_createdfrom';
+update relationtype set nameCanonical='SemanticType',nameDirect='SemanticType',nameInverse='',color='' where entry ='rel_hassemtype';
+update relationtype set nameCanonical='Inheritance_cxn',nameDirect='Inheritance_cxn',nameInverse='',color='' where entry ='rel_inheritance_cxn';
+update relationtype set nameCanonical='Daughter_of',nameDirect='Is daughter of',nameInverse='Has as daughter',color='#0000ff' where entry ='rel_daughter_of';
+update relationtype set nameCanonical='Constraint Frame',nameDirect='Constraint Frame',nameInverse='',color='' where entry ='rel_constraint_frame';
+update relationtype set nameCanonical='Constraint SemanticType',nameDirect='Constraint SemanticType',nameInverse='',color='' where entry ='rel_constraint_semtype';
+update relationtype set nameCanonical='Constraint Cxn',nameDirect='Constraint Cxn',nameInverse='',color='' where entry ='rel_constraint_cxn';
+update relationtype set nameCanonical='Constraint FrameFamily',nameDirect='Constraint FrameFamily',nameInverse='',color='' where entry ='rel_constraint_framefamily';
+update relationtype set nameCanonical='Constraint Before',nameDirect='Constraint Before',nameInverse='',color='' where entry ='rel_constraint_before';
+update relationtype set nameCanonical='Constraint Element',nameDirect='Constraint Element',nameInverse='',color='' where entry ='rel_constraint_element';
+update relationtype set nameCanonical='HasDomain',nameDirect='HasDomain',nameInverse='',color='' where entry ='rel_hasdomain';
+update relationtype set nameCanonical='Qualia Formal',nameDirect='Qualia Formal',nameInverse='',color='' where entry ='rel_qualia_formal';
+update relationtype set nameCanonical='Qualia Agentive',nameDirect='Qualia Agentive',nameInverse='',color='' where entry ='rel_qualia_agentive';
+update relationtype set nameCanonical='Qualia Telic',nameDirect='Qualia Telic',nameInverse='',color='' where entry ='rel_qualia_telic';
+update relationtype set nameCanonical='Qualia Constitutive',nameDirect='Qualia Constitutive',nameInverse='',color='' where entry ='rel_qualia_constitutive';
+update relationtype set nameCanonical='LU Equivalence',nameDirect='LU Equivalence',nameInverse='',color='' where entry ='rel_luequivalence';
+update relationtype set nameCanonical='LU_stands_for',nameDirect='LU_stands_for',nameInverse='',color='' where entry ='rel_lustandsforlu';
+update relationtype set nameCanonical='Stands_for',nameDirect='Stands for',nameInverse='Has as stands_for',color='#9e1fee' where entry ='rel_standsfor';
+update relationtype set nameCanonical='FE_stands_for_LU',nameDirect='FE_stands_for_LU',nameInverse='',color='' where entry ='rel_festandsforlu';
+update relationtype set nameCanonical='FE_stands_for_FE',nameDirect='FE_stands_for_FE',nameInverse='',color='' where entry ='rel_festandsforfe';
+update relationtype set nameCanonical='Constraint Constraint',nameDirect='Constraint Constraint',nameInverse='',color='' where entry ='rel_constraint_constraint';
+update relationtype set nameCanonical='Constraint Meets',nameDirect='Constraint Meets',nameInverse='',color='' where entry ='rel_constraint_meets';
+update relationtype set nameCanonical='Constraint Wordform',nameDirect='Constraint Wordform',nameInverse='',color='' where entry ='rel_constraint_wordform';
+update relationtype set nameCanonical='Constraint Lexeme',nameDirect='Constraint Lexeme',nameInverse='',color='' where entry ='rel_constraint_lexeme';
+update relationtype set nameCanonical='Constraint Lemma',nameDirect='Constraint Lemma',nameInverse='',color='' where entry ='rel_constraint_lemma';
+update relationtype set nameCanonical='Constraint LU',nameDirect='Constraint LU',nameInverse='',color='' where entry ='rel_constraint_lu';
+update relationtype set nameCanonical='Qualia Frame',nameDirect='Qualia Frame',nameInverse='',color='' where entry ='rel_qualia_frame';
+update relationtype set nameCanonical='Qualia LU1_FE',nameDirect='Qualia LU1_FE',nameInverse='',color='' where entry ='rel_qualia_lu1_fe';
+update relationtype set nameCanonical='Qualia LU2_FE',nameDirect='Qualia LU2_FE',nameInverse='',color='' where entry ='rel_qualia_lu2_fe';
+update relationtype set nameCanonical='Constraint ST-LU',nameDirect='Constraint ST-LU',nameInverse='',color='' where entry ='rel_constraint_stlu';
+update relationtype set nameCanonical='Constraint UD-Feature',nameDirect='Constraint UD-Feature',nameInverse='',color='' where entry ='rel_constraint_udfeature';
+update relationtype set nameCanonical='Constraint UD-Relation',nameDirect='Constraint UD-Relation',nameInverse='',color='' where entry ='rel_constraint_udrelation';
+update relationtype set nameCanonical='Constraint Follows',nameDirect='Constraint Follows',nameInverse='',color='' where entry ='rel_constraint_follows';
+update relationtype set nameCanonical='Constraint Same',nameDirect='Constraint Same',nameInverse='',color='' where entry ='rel_constraint_same';
+update relationtype set nameCanonical='Constraint Different',nameDirect='Constraint Different',nameInverse='',color='' where entry ='rel_constraint_different';
+update relationtype set nameCanonical='Constraint Dominance',nameDirect='Constraint Dominance',nameInverse='',color='' where entry ='rel_constraint_dominance';
+update relationtype set nameCanonical='Constraint HasWord',nameDirect='Constraint HasWord',nameInverse='',color='' where entry ='rel_constraint_hasword';
+update relationtype set nameCanonical='Constraint And',nameDirect='Constraint And',nameInverse='',color='' where entry ='rel_constraint_and';
+update relationtype set nameCanonical='Constraint Xor',nameDirect='Constraint Xor',nameInverse='',color='' where entry ='rel_constraint_xor';
+update relationtype set nameCanonical='Constraint Evokes',nameDirect='Constraint Evokes',nameInverse='',color='' where entry ='rel_constraint_evokes';
+update relationtype set nameCanonical='Constraint',nameDirect='Constraint',nameInverse='',color='' where entry ='rel_constraint';
+update relationtype set nameCanonical='HasConcept',nameDirect='Has concept',nameInverse='Is concept of',color='#9e1fee' where entry ='rel_hasconcept';
+update relationtype set nameCanonical='Constraint UD-POS',nameDirect='Constraint UD-POS',nameInverse='',color='' where entry ='rel_constraint_udpos';
+update relationtype set nameCanonical='Constraint After',nameDirect='Constraint After',nameInverse='',color='' where entry ='rel_constraint_after';
+update relationtype set nameCanonical='Constraint U-Gender',nameDirect='Constraint U-Gender',nameInverse='',color='' where entry ='rel_constraint_ugender';
+update relationtype set nameCanonical='Constraint U-Person',nameDirect='Constraint U-Person',nameInverse='',color='' where entry ='rel_constraint_uperson';
+update relationtype set nameCanonical='Constraint U-Number',nameDirect='Constraint U-Number',nameInverse='',color='' where entry ='rel_constraint_unumber';
+update relationtype set nameCanonical='Form Contraction',nameDirect='Form Contraction',nameInverse='',color='' where entry ='rel_form_contraction';
+update relationtype set nameCanonical='PartWhole',nameDirect='Part of',nameInverse='Has as part',color='#9e1fee' where entry ='rel_partwhole';
+update relationtype set nameCanonical='FramalType',nameDirect='FramalType',nameInverse='',color='' where entry ='rel_framal_type';
+update relationtype set nameCanonical='FramalDomain',nameDirect='FramalDomain',nameInverse='',color='' where entry ='rel_framal_domain';
+update relationtype set nameCanonical='FramalCluster',nameDirect='FramalCluster',nameInverse='',color='' where entry ='rel_framal_cluster';
+update relationtype set nameCanonical='Qualia',nameDirect='Qualia',nameInverse='',color='' where entry ='rel_qualia';
+update relationtype set nameCanonical='Translation',nameDirect='Translation',nameInverse='',color='' where entry ='rel_translation';
+update relationtype set nameCanonical='Description',nameDirect='Description',nameInverse='',color='' where entry ='rel_description';
+update relationtype set nameCanonical='Video_Sentence',nameDirect='Video_Sentence',nameInverse='',color='' where entry ='rel_video_sentence';
+update relationtype set nameCanonical='Video_DynObject',nameDirect='Video_DynObject',nameInverse='',color='' where entry ='rel_video_dynobj';
+update relationtype set nameCanonical='Image_StaObject',nameDirect='Image_StaObject',nameInverse='',color='' where entry ='rel_image_staobj';
+update relationtype set nameCanonical='Image_Sentence',nameDirect='Image_Stence',nameInverse='',color='' where entry ='rel_image_sentence';
+update relationtype set nameCanonical='DynObject_BBox',nameDirect='DynObject_BBox',nameInverse='',color='' where entry ='rel_dynobj_bbox';
+update relationtype set nameCanonical='StaObject_BBox',nameDirect='StaObject_BBox',nameInverse='',color='' where entry ='rel_staobj_bbox';
+update relationtype set nameCanonical='Sentence_Time',nameDirect='Sentence_Time',nameInverse='',color='' where entry ='rel_sentence_time';
+update relationtype set nameCanonical='Sentence_TextSpan',nameDirect='Sentence_TextSpan',nameInverse='',color='' where entry ='rel_sentence_textspan';
+update relationtype set nameCanonical='Document_Sentence',nameDirect='Document_Sentence',nameInverse='',color='' where entry ='rel_document_sentence';
+update relationtype set nameCanonical='Document_Video',nameDirect='Document_Video',nameInverse='',color='' where entry ='rel_document_video';
+update relationtype set nameCanonical='Annotation',nameDirect='Annotation',nameInverse='',color='' where entry ='rel_annotation';
+update relationtype set nameCanonical='Document_Image',nameDirect='Document_Image',nameInverse='',color='' where entry ='rel_document_image';
+
+
+update relationtype set color='#000000' where color = '';
+update relationtype set color='#000000' where color = '#000';
+update relationtype set nameInverse=nameDirect where nameInverse='';
+
+update relationtype set color='#0000FF' where entry ='rel_coreset';
+update relationtype set color='#FF0000' where entry ='rel_excludes';
+update relationtype set color='#008000' where entry ='rel_requires';
+
+
+--
+-- Criação da tabela ProjectGroup
+-- 04/12/2024
+--
+-- Necessidade de agrupar os projetos de forma sistematizada, para filtrar os corpus na interface
+--
+
+insert into projectgroup (name) values ('CorpusAnnotation');
+insert into projectgroup (name) values ('StaticEntityAnnotation');
+insert into projectgroup (name) values ('StaticEventAnnotation');
+insert into projectgroup (name) values ('DynamicAnnotation');
+insert into projectgroup (name) values ('DeixisAnnotation');
+insert into projectgroup (name) values ('StaticBBoxAnnotation');
+
+
+--
+-- Recarga das anotações de StaticObject porque não foi diferenciado de qual corpus a anotação era
+-- 04/12/2024
+--
+-- Necessidade de criar Task/UserTask para cada Corpus e registar na tabela Annotation
+--
+-- Corpus com anotações em staticannotationmm:
+
+80,crp_flickr30k
+83,crp_flickr30k-1k-1
+84,crp_flickr30k-1k-2
+95,crp_nlperspectives-2k
+96,crp_framed_30k-det
+113,crp_flickr30k_german
+139,crp_projekt_bildannotation
+140,crp_oficina_com_sentenca_1
+141,crp_oficina_com_sentenca_2
+142,crp_oficina_sem_sentenca_1
+143,crp_oficina_sem_sentenca_2
+144,crp_oficina_com_sentenca_3
+145,crp_oficina_com_sentenca_4
+146,crp_oficina_sem_sentenca_3
+147,crp_oficina_sem_sentenca_4
+150,crp_projekt_leipzig
+153,crp_test_static_frame
+156,crp_projekt_leipzig_2
+157,crp_event_frame_test_com_sentença
+158,crp_event_frame_test_sem_sentença
+159,crp_projekt_leipzig_2_eno
+160,crp_corpus-prime-com-sentença
+161,crp_corpus-prime-sem-sentença
+
+-- Corpus que serão carregados na webtool4:
+
+-- 140,crp_oficina_com_sentenca_1
+-- 141,crp_oficina_com_sentenca_2
+-- 142,crp_oficina_sem_sentenca_1
+-- 143,crp_oficina_sem_sentenca_2
+-- 144,crp_oficina_com_sentenca_3
+-- 145,crp_oficina_com_sentenca_4
+-- 146,crp_oficina_sem_sentenca_3
+-- 147,crp_oficina_sem_sentenca_4
+-- 160,crp_corpus-prime-com-sentença
+-- 161,crp_corpus-prime-sem-sentença
+
+insert into annotation (idRelationType, idAnnotationObject, idEntity, idUserTask)
+select 229, so.idAnnotationObject, fe.idEntity, 95
+from staticannotationmm sam
+join frameelement fe on (sam.idFrameElement = fe.idFrameElement)
+join staticobjectsentencemm sos on (sam.idStaticObjectSentenceMM = sos.idStaticObjectSentenceMM)
+join staticsentencemm ssm on (sos.idStaticSentenceMM = ssm.idStaticSentenceMM)
+join staticobjectmm som on (sos.idStaticObjectMM = som.idStaticObjectMM)
+join staticobject so on (som.idFlickr30kEntitiesChain = so.idFlickr30kEntitiesChain)
+join document d on (ssm.idDocument = d.idDocument)
+join corpus c on (d.idCorpus = c.idCorpus)
+where (c.idCorpus = 160);
+
+insert into annotation (idRelationType, idAnnotationObject, idEntity, idUserTask)
+select 229, so.idAnnotationObject, fe.idEntity, 101
+from staticannotationmm sam
+join frameelement fe on (sam.idFrameElement = fe.idFrameElement)
+join staticobjectsentencemm sos on (sam.idStaticObjectSentenceMM = sos.idStaticObjectSentenceMM)
+join staticsentencemm ssm on (sos.idStaticSentenceMM = ssm.idStaticSentenceMM)
+join staticobjectmm som on (sos.idStaticObjectMM = som.idStaticObjectMM)
+join staticobject so on (som.idFlickr30kEntitiesChain = so.idFlickr30kEntitiesChain)
+join document d on (ssm.idDocument = d.idDocument)
+join corpus c on (d.idCorpus = c.idCorpus)
+where (c.idCorpus = 161);
+
+--
+-- Update de StaticObject
+-- 05/12/2024
+--
+-- StaticObject referentes à anotação StaticBBox estavam sendo criados com idFlickr30kEntitiesChain = 0
+-- quando foi feita a carga das anotações de StaticEntity e StaticEvent, as anotações com idFlickr30kEntitiesChain = 0 foram acrescentadas aos objetos da StaticBBox
+-- é preciso atualizar o idFlickr30kEntitiesChain para -1 para os objetos do StaticBBox
+--
+
+-- StaticBBox: idCorpus between 183 and 192
+
+update staticobject sob
+join view_object_relation or1 on (sob.idAnnotationObject = or1.idAnnotationObject2)
+join view_object_relation or2 on (or1.idAnnotationObject1 = or2.idAnnotationObject2)
+join document d on (or2.idAnnotationObject1 = d.idAnnotationObject)
+set sob.idFlickr30kEntitiesChain = -1
+where (d.idCorpus between 183 and 192);
+
+delete from annotation
+where (idUserTask in (95,101,102,103))
+and idAnnotationObject in (
+select sob.idAnnotationObject
+from staticobject sob
+join view_object_relation or1 on (sob.idAnnotationObject = or1.idAnnotationObject2)
+join view_object_relation or2 on (or1.idAnnotationObject1 = or2.idAnnotationObject2)
+join document d on (or2.idAnnotationObject1 = d.idAnnotationObject)
+where (d.idCorpus between 183 and 192));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
