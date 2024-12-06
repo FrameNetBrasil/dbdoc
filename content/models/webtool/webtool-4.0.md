@@ -1,14 +1,22 @@
-# webtool-4.0
-
 [[Diagrams]]
+[[Timeline]]
 
 ## Nova estrutura para projetos
 
 - Tabelas: Project, Dataset, Task, UserTask
 
+### Para criação de novo projeto
+1. Criar Projeto.
+2. Criar Dataset e associar ao Projeto.
+3. Criar Corpus (se necessário) e associar ao Projeto.
+4. Criar Documento (se necessário) e associar ao Corpus.
+5. Criar a Task (tarefa de anotação), definindo o Dataset associado.
+6. Associar o Usuário à Task (tabela UserTask).
+7. Associar os Documentos/Corpus à UserTask.
+
 ### Tabela AnnotationObject
 
-- todos os objetos que podem ser anotados
+- todos os objetos que participam do processo de anotação.
 - equivale ao ENTITY para as tabelas da estrutura
 - tipos de objetos:
 
@@ -37,7 +45,7 @@
 
 ### Relações entre objetos
 
-- as relações entre objetos são registradas na tabela AnnotationObjectRelation
+- as relações entre objetos são registradas na tabela AnnotationObjectRelation ( ver [[Diagrams]] )
 
 - rel_translation: sentence/sentence
 - rel_description: image/sentence
@@ -57,6 +65,7 @@
 
 - uma anotação é a relação entre um AnnotationObject e uma Entity, no contexto de uma UserTask
 - relationtype: rel_annotation
+- Objetos que são anotados: Textspan, StaticObject e DynamicObject
 
 ## Atualização de Entity.type para 3 chars
 
