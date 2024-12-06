@@ -1,5 +1,6 @@
 # webtool-4.0
 
+[[Diagrams]]
 
 ## Nova estrutura para projetos
 
