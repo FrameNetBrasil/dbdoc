@@ -8,11 +8,12 @@
 ### Para criação de novo projeto
 1. Criar Projeto.
 2. Criar Dataset e associar ao Projeto.
-3. Criar Corpus (se necessário) e associar ao Dataset.
-4. Criar Documento (se necessário) e associar ao Corpus.
-5. Criar a Task (tarefa de anotação), definindo o Dataset associado.
-6. Associar o Usuário à Task (tabela UserTask).
-7. Associar os Documentos/Corpus à UserTask.
+3. Criar Corpus.
+4. Criar Documento(s)  e associar ao Corpus.
+5. Associar o Corpus ao Dataset.
+6. Criar a Task (tarefa de anotação), definindo o Dataset associado.
+7. Associar o Usuário à Task (tabela UserTask).
+8. Associar os Documentos/Corpus à UserTask.
 
 ### Tabela AnnotationObject
 
