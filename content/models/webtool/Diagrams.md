@@ -10,7 +10,7 @@ flowchart TB
 	video -- rel_video_dynobj --> dynamic_object
 	dynamic_object -- rel_dynobj_bbox --> bounding_box
 	static_object -- rel_staobj_bbox --> bounding_box
-	image --> rel_image_staobj --> static_object
+	image -- rel_image_staobj --> static_object
 	image -- rel_image_sentence --> sentence
 
 ```

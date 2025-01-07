@@ -1,3 +1,5 @@
+
+
 --
 -- Update Entity.type
 --
@@ -60,20 +62,7 @@ select relationgroup_create('{"entry":"rgp_object","name":"Object"}');
 select relationgroup_create('{"entry":"rgp_annotation","name":"Annotation"}');
 select relationgroup_create('{"entry":"rgp_structure","name":"Structure"}');
 
---select relationtype_create('{"entry":"rel_translation","name":"Translation","relationGroup":"rgp_object"}');
---select relationtype_create('{"entry":"rel_description","name":"Description","relationGroup":"rgp_object"}');
---select relationtype_create('{"entry":"rel_video_sentence","name":"Video_Sentence","relationGroup":"rgp_object"}');
---select relationtype_create('{"entry":"rel_video_dynobj","name":"Video_DynObject","relationGroup":"rgp_object"}');
---select relationtype_create('{"entry":"rel_image_staobj","name":"Image_StaticObject","relationGroup":"rgp_object"}');
---select relationtype_create('{"entry":"rel_image_sentence","name":"Image_Sentence","relationGroup":"rgp_object"}');
---select relationtype_create('{"entry":"rel_dynobj_bbox","name":"DynObject_BBox","relationGroup":"rgp_object"}');
---select relationtype_create('{"entry":"rel_staobj_bbox","name":"StaticObject_BBox","relationGroup":"rgp_object"}');
---select relationtype_create('{"entry":"rel_sentence_time","name":"Sentence_TimeSpan","relationGroup":"rgp_object"}');
---select relationtype_create('{"entry":"rel_sentence_textspan","name":"Sentence_TextSpan","relationGroup":"rgp_object"}');
---select relationtype_create('{"entry":"rel_document_sentence","name":"Document_Sentence","relationGroup":"rgp_object"}');
---select relationtype_create('{"entry":"rel_document_video","name":"Document_Video","relationGroup":"rgp_object"}');
---select relationtype_create('{"entry":"rel_document_image","name":"Document_Image","relationGroup":"rgp_object"}');
---select relationtype_create('{"entry":"rel_annotation","name":"Object_Annotation","relationGroup":"rgp_annotation"}');
+
 
 -- routine update at november/24
 select relationtype_create('{"nameCanonical":"translation","nameDirect":"Translation","nameInverse":"Translation","color":"#000000","prefix":"","idRelationGroup":12,"idUser":6}');
@@ -96,6 +85,7 @@ select relationtype_create('{"nameCanonical":"annotation","nameDirect":"Object_A
 --
 
 insert into `group`(name, description) values ('MANAGER','Task Manager');
+
 
 --
 -- generic user to Default Task
@@ -372,6 +362,21 @@ join task t on (c.entry = t.name)
 join usertask ut on (t.idTask = ut.idTask)
 where (sam.idFrameElement is not null)
 and (ut.iduser = -2);
+
+-- rel_document_image
+
+insert into annotationobjectrelation(idRelationType, idAnnotationObject1, idAnnotationObject2)
+select distinct 230, d.idAnnotationObject, i.idAnnotationObject
+from staticsentencemm ss
+join document d on (ss.idDocument = d.idDocument)
+join imagemm imm on (ss.idImageMM = imm.idImageMM)
+join image i on (imm.name = i.name)
+where d.idCorpus in (140,141,142,143,144,145,146,147,160,161);
+
+-- rel_image_staobj
+
+-- script webtool40_create_rel_image_staobj
+
 
 -- create dynamicobject from dynamicobjectmm
 --
