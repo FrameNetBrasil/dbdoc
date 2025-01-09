@@ -1,0 +1,9 @@
+--
+-- Update estrutura Project/Dataset
+-- 09/01/2025
+--
+-- A relação Project/Dataset passa a ser 1:N e não mais N:N
+-- Um dataset pertence somente a um projeto
+--
+
+

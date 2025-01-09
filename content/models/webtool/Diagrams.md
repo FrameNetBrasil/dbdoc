@@ -1,7 +1,7 @@
 ## Relações entre AnnotationObjects
 ```mermaid
 flowchart TB
-	sentence -- rel_sentence_time --> time
+	sentence -- rel_sentence_time --> timespan
 	sentence -- rel_sentence_textspan --> textspan
 	document -- rel_document_sentence --> sentence
 	document -- rel_document_video --> video
