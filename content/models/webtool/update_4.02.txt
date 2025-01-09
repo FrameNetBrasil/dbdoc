@@ -6,4 +6,7 @@
 -- Um dataset pertence somente a um projeto
 --
 
-
+update dataset d
+join project_dataset pd on (d.idDataset = pd.idDataset)
+set d.idProject = pd.idProject
+where d.idDataset > 0;
