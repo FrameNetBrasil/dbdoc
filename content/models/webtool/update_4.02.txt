@@ -10,3 +10,23 @@ update dataset d
 join project_dataset pd on (d.idDataset = pd.idDataset)
 set d.idProject = pd.idProject
 where d.idDataset > 0;
+
+--
+-- Image associada a Datasets
+-- 09/01/2025
+--
+-- As imagens passam a ser associadas a um ou mais datasets
+--
+-- Criar o projeto Flickr30k e o dataset Flickr30k_dataset para associar as imagens do Flickr30k
+--
+
+start transaction;
+insert into dataset_image (idDataset,idImage) select 75, idImage from image where idImage between 1 and 31783;
+insert into dataset_image (idDataset,idImage) select 42, idImage from image where idImage between 31784 and 31808;
+insert into dataset_image (idDataset,idImage) select 44, idImage from image where idImage between 31809 and 31888;
+insert into dataset_image (idDataset,idImage) select 44, idImage from image where idImage between 32029 and 32029;
+insert into dataset_image (idDataset,idImage) select 47, idImage from image where idImage between 31889 and 31918;
+insert into dataset_image (idDataset,idImage) select 46, idImage from image where idImage between 31919 and 31975;
+insert into dataset_image (idDataset,idImage) select 45, idImage from image where idImage between 31976 and 32028;
+insert into dataset_image (idDataset,idImage) select 73, idImage from image where idImage between 32030 and 32041;
+commit;
