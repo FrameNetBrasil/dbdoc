@@ -4,18 +4,6 @@
 --
 --
 
-CREATE USER IF NOT EXISTS 'webtool'@'%' IDENTIFIED BY 'Nhmqsdnbqnsa2025';
-
-GRANT SELECT, INSERT, UPDATE, DELETE, EXECUTE ON webtool40_db.* TO 'webtool'@'%';
-
-CREATE USER IF NOT EXISTS 'internal'@'%' IDENTIFIED BY 'Aeamdtoe2025';
-
-GRANT SELECT, INSERT, UPDATE, DELETE, EXECUTE ON webtool40_db.* TO 'internal'@'%';
-
-FLUSH PRIVILEGES;
-
-
-
 INSERT INTO rls_label (label, value) VALUES
 	('public', 1),
 	('internal', 2);
@@ -24,6 +12,6 @@ INSERT INTO rls_access (user, value) VALUES
 	('root@%', 15),
 	('fnbrasil@%', 15),
 	('webtool@%', 1),
-	('webtool@localhost', 1),
+	('webtool@localhost%', 1),
 	('internal%', 3);
 
