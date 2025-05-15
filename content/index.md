@@ -1,4 +1,4 @@
 ---
 title: FNBr database
 ---
-[[models]]
+[[webtool/main|main]]
